@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/brand/Button";
+import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 import { withBasePath } from "@/lib/basePath";
 import { createClient } from "@/lib/supabase/client";
 
@@ -40,12 +41,16 @@ export function GoogleSignInButton({ initialError = false }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <Button onClick={signIn} disabled={pending}>
+    <div className="flex w-full flex-col items-center gap-3">
+      <Button size="lg" className="w-full" onClick={signIn} disabled={pending}>
         {pending ? t("redirecting") : t("google")}
       </Button>
       {failed && (
-        <p role="alert" className="text-sm text-red">
+        <p
+          role="alert"
+          className="flex items-center gap-1 text-small text-danger"
+        >
+          <Icon name="alert" size={16} />
           {t("error")}
         </p>
       )}

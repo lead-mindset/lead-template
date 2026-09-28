@@ -43,7 +43,7 @@ automatically. Everything else goes through `withBasePath()` in
 | Concern         | Choice                                   | Why                                                                                                |
 | --------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Framework       | Next.js (App Router, TypeScript, `src/`) | Multi Zones support, server components, first-class on Vercel.                                     |
-| Styling         | Tailwind CSS v4, tokens in `@theme`      | Brand tokens live in CSS (`src/styles/globals.css`); no JS config needed.                          |
+| Styling         | Tailwind CSS v4, tokens in `@theme`      | Design system tokens live in CSS (`src/styles/globals.css`); components in `src/components/ui`.    |
 | i18n            | next-intl, `en` and `es`, default `es`   | App Router native, locale always in the URL, so links and SEO are unambiguous.                     |
 | Auth + database | Supabase with `@supabase/ssr`            | Postgres with RLS, Google OAuth, and cookie sessions that work in server components and the proxy. |
 | Sign in         | Google through Supabase Auth             | Our users already have Google accounts; no passwords to manage.                                    |

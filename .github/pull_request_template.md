@@ -17,6 +17,7 @@
 
 - [ ] `npm run lint`, `npx tsc --noEmit` and `npm test` pass locally
 - [ ] Works with and without `NEXT_PUBLIC_BASE_PATH`
+- [ ] UI uses design system tokens and `src/components/ui` (no new colors, fonts or radii)
 - [ ] New UI text is in `messages/en.json` and `messages/es.json` (no hardcoded strings)
 - [ ] Public assets, `<img>`/`<video>` and client `fetch` calls use `withBasePath`
 - [ ] New env vars are documented in `.env.example` and added in Vercel

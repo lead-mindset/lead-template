@@ -27,4 +27,46 @@ for (const { locale, messages } of cases) {
       page.getByRole("heading", { level: 1, name: messages.HomePage.title }),
     ).toBeVisible();
   });
+
+  test(`welcome page links to the design system in ${locale}`, async ({
+    page,
+  }) => {
+    await page.goto(locale);
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: messages.HomePage.designSystem })
+      .click();
+
+    await expect(page).toHaveURL(new RegExp(`/${locale}/design-system$`));
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: messages.DesignSystemPage.title,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", {
+        name: messages.DesignSystemPage.components.primary,
+      }),
+    ).toBeVisible();
+  });
 }
+
+test.describe("theme toggle", () => {
+  test.use({ colorScheme: "dark" });
+
+  test("switches to light and remembers it", async ({ page }) => {
+    await page.goto("es");
+    const html = page.locator("html");
+    await expect(html).toHaveAttribute("data-theme", "dark");
+
+    await page
+      .getByRole("banner")
+      .getByRole("button", { name: es.Header.toggleTheme })
+      .click();
+    await expect(html).toHaveAttribute("data-theme", "light");
+
+    await page.reload();
+    await expect(html).toHaveAttribute("data-theme", "light");
+  });
+});

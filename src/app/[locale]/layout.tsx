@@ -5,7 +5,9 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Footer } from "@/components/brand/Footer";
 import { Header } from "@/components/brand/Header";
+import { themeScript } from "@/components/theme/themeScript";
 import { routing } from "@/i18n/routing";
+import { montserrat, sourceSans } from "@/styles/fonts";
 import "@/styles/globals.css";
 
 type Props = {
@@ -20,7 +22,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  return { title: t("title"), description: t("description") };
+  return {
+    title: { default: t("title"), template: `%s · ${t("title")}` },
+    description: t("description"),
+  };
 }
 
 export default async function LocaleLayout({ children, params }: Props) {
@@ -29,7 +34,15 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <html lang={locale}>
+    <html
+      lang={locale}
+      className={`${montserrat.variable} ${sourceSans.variable}`}
+      // data-theme is set by themeScript before hydration.
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="flex min-h-screen flex-col antialiased">
         <NextIntlClientProvider>
           <Header />

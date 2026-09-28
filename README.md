@@ -5,7 +5,8 @@ what every app needs on day one:
 
 - Next.js (App Router, TypeScript, `src/`) with a configurable `basePath` for
   [Multi Zones](docs/adr/0001-stack.md)
-- Tailwind CSS v4 with the LEAD brand tokens and brand components
+- Tailwind CSS v4 wired to the [LEAD design system](https://claude.ai/artifact/95H4SYHVEAMeEFrhpLyEtE):
+  tokens, fonts, logos and components (live reference at `/<locale>/design-system`)
 - next-intl with `es` (default) and `en`, locale always in the URL
 - Supabase (`@supabase/ssr`) with Google sign in and session refresh
 - Resend for transactional email
@@ -45,8 +46,7 @@ Replace `talent` / `TALENT_URL` below with your app's route and variable.
    `.github/CODEOWNERS`.
 
 Then update `README.md`, the `name` in `package.json`, `project_id` in
-`supabase/config.toml`, the metadata in `messages/*.json`, and replace
-`public/lead-logo.png` with the official logo.
+`supabase/config.toml`, and the metadata in `messages/*.json`.
 
 ## Local development
 
@@ -115,9 +115,32 @@ environment), so the same tests run at the root or under a base path.
   `redirectTo`), use `withBasePath()` from `@/lib/basePath`.
 - **Text.** All UI strings live in `messages/en.json` and `messages/es.json`.
   Never hardcode text in components.
-- **Brand.** Colors are Tailwind tokens (`bg-navy`, `text-red-bright`,
-  `border-violet`, …) defined in `src/styles/globals.css`. Use `lead-gradient`
-  for the brand gradient, and `Button` / `buttonClasses()` for actions.
+- **Design system.** The [LEAD design system](https://claude.ai/artifact/95H4SYHVEAMeEFrhpLyEtE)
+  is the source of truth; `/<locale>/design-system` shows what this app
+  implements. Build only from its tokens: Tailwind's default colors, radii,
+  shadows and type scale are removed.
+  - Colors are semantic: `bg-surface`, `text-ink`, `text-heading`,
+    `bg-primary text-on-primary`, `border-line`, `text-danger`, … They switch
+    for dark mode automatically: they follow the OS until someone uses the
+    header theme toggle (`ThemeToggle`), which sets `<html data-theme>` and
+    remembers the choice in `localStorage`.
+    Identity colors (`brand-navy`, `brand-red`, …) are for large fields and
+    graphics only.
+  - Type: `text-display`, `text-h1`…`text-h4`, `text-body-lg`, `text-body`,
+    `text-label`, `text-small`, `text-caption`, `text-overline` (add
+    `font-display` for the display group). h1–h4 are styled by default.
+  - Spacing `1`–`8` equal `space-1`…`space-8` (`p-5` = 24px). Radii
+    `rounded-sm|md|lg|xl|pill`. Shadows `shadow-sm|md`.
+  - `gradient-brand` once per view at most, marketing only, never in app
+    controls. `gradient-logo` only to echo the logo.
+  - Components live in `src/components/ui` with the design system's names and
+    props (`Button`, `Link`, `Toggle`, `SegmentedControl`, `TextField`,
+    `Header`, `Breadcrumbs`, `Pagination`, `ProgressBar`, `Tooltip`, `Icon`);
+    their styles are in `src/styles/components.css`. Use `buttonClasses()` /
+    `linkClasses()` to style next-intl `<Link>`s.
+  - Logos: `public/lead-mark.png` on light surfaces, `public/lead-logo-on-dark.png`
+    only on navy (`<Logo variant="on-dark" />`).
+  - Voice: tú, sentence case, verb-first buttons, no emoji in UI.
 - **Supabase.** Use `@/lib/supabase/client` in Client Components and
   `@/lib/supabase/server` on the server. `SUPABASE_SERVICE_ROLE_KEY` is
   server-only; never import it in client code.
@@ -129,18 +152,24 @@ environment), so the same tests run at the root or under a base path.
 ```
 src/
   app/
-    [locale]/            layout (Header/Footer), home, login, dashboard (protected)
+    [locale]/            layout (Header/Footer), home, login, dashboard (protected),
+                         design-system (token and component reference)
     auth/callback/       OAuth code exchange → /<base path>/<locale>
   components/
-    brand/               Logo, Header, Footer, Button
+    ui/                  Design system components (Button, TextField, Header, …)
+    brand/               Logo, app Header (wires ui/Header to routes), Footer
     auth/                Google sign-in and sign-out buttons
     i18n/                Locale switcher
   i18n/                  next-intl routing, navigation and request config
   lib/
+    designSystem.ts      Link to the design system
     basePath.ts          BASE_PATH and withBasePath()
     email/send.ts        sendEmail() with Resend
     supabase/            browser client, server client, proxy session refresh
-  styles/globals.css     Tailwind v4 @theme brand tokens
+  styles/
+    globals.css          Design system tokens in Tailwind v4 @theme (light + dark)
+    components.css       Design system component styles (ld-* classes)
+    fonts.ts, fonts/     Montserrat and Source Sans 3, self-hosted with next/font
   proxy.ts               next-intl + Supabase session refresh (formerly middleware.ts)
 messages/                en.json, es.json
 supabase/                Supabase CLI config and migrations

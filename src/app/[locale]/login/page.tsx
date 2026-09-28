@@ -15,10 +15,12 @@ export default function LoginPage({ params, searchParams }: Props) {
   const t = useTranslations("LoginPage");
 
   return (
-    <section className="mx-auto flex max-w-md flex-col items-center gap-6 px-4 py-20 text-center">
-      <h1 className="text-3xl">{t("title")}</h1>
-      <p>{t("subtitle")}</p>
-      <GoogleSignInButton initialError={Boolean(error)} />
+    <section className="px-4 py-7 sm:py-8">
+      <div className="mx-auto flex max-w-md flex-col items-center gap-5 rounded-lg border border-line bg-surface-raised p-5 text-center">
+        <h1>{t("title")}</h1>
+        <p className="text-ink-muted">{t("subtitle")}</p>
+        <GoogleSignInButton initialError={Boolean(error)} />
+      </div>
     </section>
   );
 }

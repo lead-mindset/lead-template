@@ -31,8 +31,8 @@ export default async function DashboardPage({ params }: Props) {
   const t = await getTranslations("DashboardPage");
 
   return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-16">
-      <h1 className="text-3xl">{t("title")}</h1>
+    <section className="mx-auto flex max-w-[1200px] flex-col gap-5 px-4 py-7 sm:py-8">
+      <h1>{t("title")}</h1>
       <p>{t("signedInAs", { email: user.email ?? "" })}</p>
       <div>
         <SignOutButton />

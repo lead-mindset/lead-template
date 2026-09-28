@@ -1,33 +1,29 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { routing, type Locale } from "@/i18n/routing";
 
 export function LocaleSwitcher() {
   const t = useTranslations("LocaleSwitcher");
+  const locale = useLocale();
   const pathname = usePathname();
-  const current = useLocale();
+  const router = useRouter();
 
   return (
-    <ul aria-label={t("label")} className="flex items-center gap-2">
-      {routing.locales.map((locale) => (
-        <li key={locale}>
-          <Link
-            href={pathname}
-            locale={locale}
-            aria-current={locale === current ? "true" : undefined}
-            title={t(locale)}
-            className={
-              locale === current
-                ? "font-bold text-navy"
-                : "text-text/70 hover:text-violet"
-            }
-          >
-            {locale.toUpperCase()}
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <SegmentedControl
+      label={t("label")}
+      value={locale}
+      onChange={(next) => router.replace(pathname, { locale: next as Locale })}
+      options={routing.locales.map((code) => ({
+        value: code,
+        label: (
+          <abbr title={t(code)} lang={code} className="no-underline">
+            {code.toUpperCase()}
+          </abbr>
+        ),
+      }))}
+    />
   );
 }

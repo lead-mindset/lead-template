@@ -1,0 +1,42 @@
+{
+  "Metadata": {
+    "title": "LEAD",
+    "description": "LEAD: Learn · Explore · Aspire · Discover"
+  },
+  "Brand": {
+    "name": "LEAD",
+    "logoAlt": "Logotipo de LEAD",
+    "tagline": "Learn · Explore · Aspire · Discover"
+  },
+  "Header": {
+    "nav": "Navegación principal",
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "login": "Iniciar sesión"
+  },
+  "LocaleSwitcher": {
+    "label": "Cambiar idioma",
+    "en": "Inglés",
+    "es": "Español"
+  },
+  "Footer": {
+    "copyright": "© {year} LEAD. Todos los derechos reservados."
+  },
+  "HomePage": {
+    "title": "Bienvenido a LEAD",
+    "subtitle": "Esta aplicación se creó a partir de la plantilla de LEAD. Reemplaza esta página con tu propio contenido.",
+    "cta": "Comenzar"
+  },
+  "LoginPage": {
+    "title": "Iniciar sesión",
+    "subtitle": "Usa tu cuenta de Google para continuar.",
+    "google": "Iniciar sesión con Google",
+    "redirecting": "Redirigiendo…",
+    "error": "No pudimos iniciar tu sesión. Inténtalo de nuevo."
+  },
+  "DashboardPage": {
+    "title": "Panel",
+    "signedInAs": "Sesión iniciada como {email}",
+    "signOut": "Cerrar sesión"
+  }
+}

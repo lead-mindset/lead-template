@@ -1,0 +1,42 @@
+{
+  "Metadata": {
+    "title": "LEAD",
+    "description": "LEAD: Learn · Explore · Aspire · Discover"
+  },
+  "Brand": {
+    "name": "LEAD",
+    "logoAlt": "LEAD logo",
+    "tagline": "Learn · Explore · Aspire · Discover"
+  },
+  "Header": {
+    "nav": "Main navigation",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "login": "Sign in"
+  },
+  "LocaleSwitcher": {
+    "label": "Change language",
+    "en": "English",
+    "es": "Spanish"
+  },
+  "Footer": {
+    "copyright": "© {year} LEAD. All rights reserved."
+  },
+  "HomePage": {
+    "title": "Welcome to LEAD",
+    "subtitle": "This app was created from the LEAD template. Replace this page with your own content.",
+    "cta": "Get started"
+  },
+  "LoginPage": {
+    "title": "Sign in",
+    "subtitle": "Use your Google account to continue.",
+    "google": "Sign in with Google",
+    "redirecting": "Redirecting…",
+    "error": "We could not sign you in. Please try again."
+  },
+  "DashboardPage": {
+    "title": "Dashboard",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out"
+  }
+}

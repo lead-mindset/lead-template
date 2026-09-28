@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* LEAD brand tokens. Each --color-* token generates utilities such as
+   bg-navy, text-red-bright or border-violet. */
+@theme {
+  --color-navy: #030c40;
+  --color-navy-dark: #0a1128;
+  --color-navy-light: #1e2a4a;
+  --color-red: #c34146;
+  --color-red-bright: #d93654;
+  --color-purple: #912d91;
+  --color-purple-light: #8b3a9e;
+  --color-violet: #6e55e1;
+  --color-gray-light: #f5f5f5;
+  --color-text: #333333;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+@utility lead-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-red),
+    var(--color-purple),
+    var(--color-violet)
+  );
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: #ffffff;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-navy);
+  }
+}

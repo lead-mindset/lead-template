@@ -1,15 +1,15 @@
 function loadBasePathModule(basePath: string | undefined) {
-  const original = process.env.NEXT_PUBLIC_BASE_PATH;
-  if (basePath === undefined) delete process.env.NEXT_PUBLIC_BASE_PATH;
-  else process.env.NEXT_PUBLIC_BASE_PATH = basePath;
+  const original = process.env.BASE_PATH;
+  if (basePath === undefined) delete process.env.BASE_PATH;
+  else process.env.BASE_PATH = basePath;
 
   let mod!: typeof import("./basePath");
   jest.isolateModules(() => {
     mod = jest.requireActual<typeof import("./basePath")>("./basePath");
   });
 
-  if (original === undefined) delete process.env.NEXT_PUBLIC_BASE_PATH;
-  else process.env.NEXT_PUBLIC_BASE_PATH = original;
+  if (original === undefined) delete process.env.BASE_PATH;
+  else process.env.BASE_PATH = original;
   return mod;
 }
 

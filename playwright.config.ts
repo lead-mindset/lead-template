@@ -2,11 +2,11 @@ import { defineConfig, devices } from "@playwright/test";
 import { loadEnvConfig } from "@next/env";
 import { normalizeBasePath } from "./src/lib/basePath";
 
-// Load .env / .env.local the same way Next.js does, so NEXT_PUBLIC_BASE_PATH matches the build.
+// Load .env / .env.local the same way Next.js does, so BASE_PATH matches the build.
 loadEnvConfig(process.cwd());
 
 const PORT = Number(process.env.PORT ?? 3000);
-const BASE_PATH = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
+const BASE_PATH = normalizeBasePath(process.env.BASE_PATH);
 
 export default defineConfig({
   testDir: "./e2e",

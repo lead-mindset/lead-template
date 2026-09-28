@@ -16,7 +16,7 @@ export function normalizeBasePath(value: string | undefined | null): string {
 }
 
 /** The app's base path, e.g. "" at the root or "/talent" under leadmain. */
-export const BASE_PATH = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
+export const BASE_PATH = normalizeBasePath(process.env.BASE_PATH);
 
 const ABSOLUTE_URL = /^([a-z][a-z\d+\-.]*:)?\/\//i;
 

@@ -24,7 +24,7 @@ We use [Next.js Multi Zones](https://nextjs.org/docs/app/guides/multi-zones).
   `/talent`, `/pulse` and `/aspire` (and their subpaths) to separate Vercel
   projects, configured with `TALENT_URL`, `PULSE_URL`, etc.
 - Each **child app** is its own Vercel project with no custom domain. It sets
-  `basePath` to its route, via `NEXT_PUBLIC_BASE_PATH`, so its pages and
+  `basePath` to its route, via `BASE_PATH`, so its pages and
   `/_next` assets live under that route.
 - Every app is created from this template (`lead-template`).
 
@@ -68,7 +68,7 @@ the proxy. It exchanges the code for a session and redirects to
 
 ## Consequences
 
-- Each app must set `NEXT_PUBLIC_BASE_PATH` and register its callback URL,
+- Each app must set `BASE_PATH` and register its callback URL,
   including the base path, in Supabase and Google Cloud.
 - Links between zones must be plain `<a>` tags (full page loads), not `<Link>`.
 - Assets from `public/`, `<img>`/`<video>` sources, client `fetch` calls and

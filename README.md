@@ -22,8 +22,11 @@ Replace `talent` / `TALENT_URL` below with your app's route and variable.
 1. **Use the template.** On GitHub, click **Use this template** → **Create a
    new repository** (e.g. `lead-talent`). Clone it and run `npm install`.
 2. **Set the base path.** Copy `.env.example` to `.env.local` and set
-   `NEXT_PUBLIC_BASE_PATH=/talent`. Set the same variable in Vercel (all
+   `BASE_PATH=/talent`. Set the same variable in Vercel (all
    environments), along with the other variables from `.env.example`.
+   In Vercel, add `BASE_PATH` and the `NEXT_PUBLIC_*` variables as type
+   **Config**: they reach the browser by design and are not secrets. Add
+   `SUPABASE_SERVICE_ROLE_KEY` and `RESEND_API_KEY` as secrets.
 3. **Create the Vercel project.** Import the repo into Vercel. Do **not** add a
    custom domain; the app is served through leadmain.
 4. **Wire it into leadmain.** In the leadmain Vercel project, add the app URL
@@ -59,8 +62,8 @@ cp .env.example .env.local        # fill in the values
 npm run dev                        # http://localhost:3000 (or /<base path>)
 ```
 
-- With `NEXT_PUBLIC_BASE_PATH` empty, the app is at `http://localhost:3000/es`.
-- With `NEXT_PUBLIC_BASE_PATH=/talent`, it is at `http://localhost:3000/talent/es`.
+- With `BASE_PATH` empty, the app is at `http://localhost:3000/es`.
+- With `BASE_PATH=/talent`, it is at `http://localhost:3000/talent/es`.
 - `NEXT_PUBLIC_SITE_URL` is the public origin without the base path
   (`http://localhost:3000` locally, `https://www.leadmindset.org` in production).
 - `/` redirects to a locale. next-intl picks it from the `NEXT_LOCALE` cookie or
@@ -89,7 +92,7 @@ npx playwright install chromium    # first time only
 npm run test:e2e                   # builds, starts the app and runs e2e/
 ```
 
-Playwright reads `NEXT_PUBLIC_BASE_PATH` from `.env.local` (or the
+Playwright reads `BASE_PATH` from `.env.local` (or the
 environment), so the same tests run at the root or under a base path.
 
 ## npm scripts

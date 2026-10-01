@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
-import { Icon } from "@/components/ui/Icon";
+import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { withBasePath } from "@/lib/basePath";
 import { createClient } from "@/lib/supabase/client";
 
@@ -48,9 +48,9 @@ export function GoogleSignInButton({ initialError = false }: Props) {
       {failed && (
         <p
           role="alert"
-          className="flex items-center gap-1 text-small text-danger"
+          className="flex items-center gap-1.5 text-small text-destructive"
         >
-          <Icon name="alert" size={16} />
+          <AlertCircle className="size-4" />
           {t("error")}
         </p>
       )}

@@ -1,8 +1,8 @@
 import { use } from "react";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { buttonClasses } from "@/components/ui/Button";
-import { Icon } from "@/components/ui/Icon";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
 type Props = {
@@ -24,16 +24,14 @@ export default function HomePage({ params }: Props) {
         <h1 className="text-h1 sm:text-display">{t("title")}</h1>
         <p className="text-body-lg">{t("subtitle")}</p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/login" className={buttonClasses({ size: "lg" })}>
-            {t("cta")}
-          </Link>
-          <Link
-            href="/design-system"
-            className={buttonClasses({ variant: "secondary", size: "lg" })}
-          >
-            {t("designSystem")}
-            <Icon name="arrow-right" size={18} />
-          </Link>
+          <Button asChild size="lg">
+            <Link href="/login">{t("cta")}</Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg">
+            <Link href="/design-system">
+              {t("designSystem")} <ArrowRight className="size-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

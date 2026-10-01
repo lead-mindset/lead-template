@@ -16,9 +16,9 @@ export default function LoginPage({ params, searchParams }: Props) {
 
   return (
     <section className="px-4 py-7 sm:py-8">
-      <div className="mx-auto flex max-w-md flex-col items-center gap-5 rounded-lg border border-line bg-surface-raised p-5 text-center">
-        <h1>{t("title")}</h1>
-        <p className="text-ink-muted">{t("subtitle")}</p>
+      <div className="card-surface mx-auto flex max-w-md flex-col items-center gap-5 rounded-xl border border-border/60 p-6 text-center">
+        <h1 className="text-h1 font-bold tracking-tight">{t("title")}</h1>
+        <p className="text-small text-muted-foreground">{t("subtitle")}</p>
         <GoogleSignInButton initialError={Boolean(error)} />
       </div>
     </section>

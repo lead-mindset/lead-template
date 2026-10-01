@@ -32,8 +32,8 @@ export default async function DashboardPage({ params }: Props) {
 
   return (
     <section className="mx-auto flex max-w-[1200px] flex-col gap-5 px-4 py-7 sm:py-8">
-      <h1>{t("title")}</h1>
-      <p>{t("signedInAs", { email: user.email ?? "" })}</p>
+      <h1 className="text-h1 font-bold tracking-tight">{t("title")}</h1>
+      <p className="text-muted-foreground">{t("signedInAs", { email: user.email ?? "" })}</p>
       <div>
         <SignOutButton />
       </div>

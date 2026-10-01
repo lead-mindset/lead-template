@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Icon } from "@/components/ui/Icon";
-import { cx } from "@/components/ui/cx";
+import { Moon, Sun } from "lucide-react";
+import { cn } from "@/lib/cn";
+import { Button } from "@/components/ui/button";
 import { THEME_STORAGE_KEY } from "./themeScript";
 
 function currentTheme(): "light" | "dark" {
@@ -22,55 +22,26 @@ function toggleTheme() {
 }
 
 type ThemeToggleProps = {
-  /** "icon": header icon button. "menu": full-width item with a label. */
   variant?: "icon" | "menu";
   className?: string;
 };
 
-/**
- * Switches between the design system's light and dark themes.
- * Icons and labels swap with CSS on <html data-theme>, so server and client
- * render the same markup.
- */
+/** Switches between the design system's light and dark themes. */
 export function ThemeToggle({ variant = "icon", className }: ThemeToggleProps) {
-  const t = useTranslations("Header");
-
   if (variant === "menu") {
     return (
-      <button
-        type="button"
-        onClick={toggleTheme}
-        className={cx(
-          "flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-label text-ink hover:bg-primary-soft",
-          className,
-        )}
-      >
-        <span className="flex items-center gap-2 in-data-[theme=dark]:hidden">
-          <Icon name="moon" size={18} />
-          {t("darkTheme")}
-        </span>
-        <span className="hidden items-center gap-2 in-data-[theme=dark]:flex">
-          <Icon name="sun" size={18} />
-          {t("lightTheme")}
-        </span>
-      </button>
+      <Button type="button" variant="ghost" className={cn("w-full justify-start gap-2", className)} onClick={toggleTheme}>
+        <Moon className="size-4 in-data-[theme=dark]:hidden" />
+        <Sun className="hidden size-4 in-data-[theme=dark]:flex" />
+        <span className="hidden in-data-[theme=dark]:inline">Light theme</span>
+      </Button>
     );
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label={t("toggleTheme")}
-      title={t("toggleTheme")}
-      className={cx("ld-header-icon", className)}
-    >
-      <span className="flex in-data-[theme=dark]:hidden">
-        <Icon name="moon" size={20} />
-      </span>
-      <span className="hidden in-data-[theme=dark]:flex">
-        <Icon name="sun" size={20} />
-      </span>
-    </button>
+    <Button type="button" variant="ghost" size="icon" aria-label="Toggle theme" title="Toggle theme" className={className} onClick={toggleTheme}>
+      <Moon className="size-4 in-data-[theme=dark]:hidden" />
+      <Sun className="hidden size-4 in-data-[theme=dark]:flex" />
+    </Button>
   );
 }

@@ -63,6 +63,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Chip } from "@/components/ui/chip";
 import { IconTile } from "@/components/ui/icon-tile";
 import { Field } from "@/components/form";
+import { ProgressBar } from "@/components/ui/progress-bar";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { Pagination } from "@/components/ui/pagination";
 import { PhotoUpload } from "@/components/photo-upload";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -520,6 +523,65 @@ export default function DesignSystemPage() {
           <Row label="Separator">
             <Separator className="w-full" />
           </Row>
+        </Section>
+
+        <Section title="Primitivas adicionales">
+          <Row label="ProgressBar">
+            <div className="w-full max-w-sm space-y-3">
+              <ProgressBar value={65} />
+              <ProgressBar value={30} />
+            </div>
+          </Row>
+          <Row label="Breadcrumbs">
+            <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Programs", href: "/programs" }, { label: "AI Budget Games" }]} />
+          </Row>
+          <Row label="Pagination">
+            <Pagination page={2} totalPages={5} onChange={() => {}} />
+          </Row>
+        </Section>
+
+        <Section title="Naming semántico (surface / ink / line)">
+          <p className="mb-4 text-small text-muted-foreground">
+            vocabulario de Angela mapeado sobre los tokens de la base. una sola paleta, dos idiomas.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-small">
+              <thead>
+                <tr className="text-left text-caption text-muted-foreground">
+                  <th className="pb-2 pr-4 font-medium">semántico</th>
+                  <th className="pb-2 pr-4 font-medium">token base</th>
+                  <th className="pb-2 font-medium">uso</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/40">
+                {[
+                  ["surface", "background", "fondo de página"],
+                  ["surface-alt", "muted", "superficies secundarias"],
+                  ["surface-raised", "card", "tarjetas / popovers"],
+                  ["surface-inverse", "foreground", "fondo inverso (texto claro)"],
+                  ["ink", "foreground", "texto principal"],
+                  ["ink-muted", "muted-foreground", "texto secundario"],
+                  ["ink-disabled", "muted-foreground", "texto deshabilitado"],
+                  ["line", "border", "bordes"],
+                  ["heading", "foreground", "títulos"],
+                  ["primary", "primary", "acción principal"],
+                  ["on-primary", "primary-foreground", "texto sobre primary"],
+                  ["danger", "destructive", "destructivo"],
+                  ["danger-soft", "destructive", "destructivo suave"],
+                  ["success", "success", "éxito"],
+                  ["focus-ring", "ring", "foco de teclado"],
+                ].map(([sem, base, uso]) => (
+                  <tr key={sem}>
+                    <td className="py-1.5 pr-4">
+                      <code className="rounded bg-muted px-1.5 py-0.5 text-caption text-brand-purple-light">{sem}</code>
+                    </td>
+                    <td className="py-1.5 pr-4 text-muted-foreground">{base}</td>
+                    <td className="py-1.5 text-muted-foreground">{uso}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Section>
       </div>
     </div>

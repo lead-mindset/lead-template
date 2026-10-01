@@ -1,271 +1,265 @@
 @import "tailwindcss";
 @import "./components.css";
 
-/*
- * LEAD design system tokens.
- * Source of truth: https://claude.ai/artifact/95H4SYHVEAMeEFrhpLyEtE
- *
- * Token names match the design system, under Tailwind's namespaces:
- *   color `primary`   -> --color-primary   -> bg-primary, text-primary, border-primary
- *   space `space-5`   -> --spacing-5       -> p-5, gap-5, m-5 (use 1 to 8 only)
- *   radius `radius-md`-> --radius-md       -> rounded-md
- *   shadow `shadow-sm`-> --shadow-sm       -> shadow-sm
- *   type `h1`         -> --text-h1         -> text-h1 (add font-display for display styles)
- *
- * Tailwind's default palette, radii, shadows and type scale are cleared on
- * purpose: build only from these tokens. Do not invent new values.
- */
+@custom-variant dark (&:is(.dark *));
 
-@theme static {
-  --color-*: initial;
-  --radius-*: initial;
-  --shadow-*: initial;
-  --text-*: initial;
-
-  /* Semantic colors (light theme; dark overrides below). Components use these. */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f5f5f5;
-  --color-surface-raised: #ffffff;
-  --color-surface-inverse: #030c40;
-  --color-line: #e3e5ec;
-  --color-line-strong: #7c8196;
-  --color-heading: #030c40;
-  --color-ink: #333333;
-  --color-ink-muted: #5f6373;
-  --color-ink-disabled: #9a9eab;
-  --color-on-inverse: #ffffff;
-  --color-primary: #a6249d;
-  --color-primary-strong: #861c7f;
-  --color-on-primary: #ffffff;
-  --color-primary-soft: #f7e9f6;
-  --color-accent: #7957f2;
-  --color-accent-soft: #f3f0fe;
-  --color-danger: #b42318;
-  --color-danger-soft: #fdecea;
-  --color-success: #107a57;
-  --color-success-soft: #e6f4ee;
-  --color-focus-ring: var(--color-primary);
-
-  /* Identity colors: same in both themes. Large fields, graphics, gradients. */
-  --color-brand-navy: #030c40;
-  --color-brand-navy-900: #0a1128;
-  --color-brand-navy-700: #1e2a4a;
-  --color-brand-red: #d93240;
-  --color-brand-magenta: #bf2a52;
-  --color-brand-purple: #a6249d;
-  --color-brand-violet: #7957f2;
-  --color-logo-red: #dd3029;
-  --color-logo-purple: #931ea2;
-
-  /* Families. --font-montserrat and --font-source-sans come from next/font (src/styles/fonts.ts). */
-  --font-display:
-    var(--font-montserrat), "Montserrat", "Segoe UI", system-ui, sans-serif;
-  --font-sans:
-    var(--font-source-sans), "Source Sans 3", system-ui, -apple-system,
-    "Segoe UI", sans-serif;
-
-  /* Type styles. Display group uses font-display, Text group uses font-sans. */
-  --text-wordmark: 48px;
-  --text-wordmark--line-height: 48px;
-  --text-wordmark--font-weight: 900;
-  --text-wordmark--letter-spacing: 0.08em;
-  --text-display: 48px;
-  --text-display--line-height: 52px;
-  --text-display--font-weight: 800;
-  --text-display--letter-spacing: -0.01em;
-  --text-h1: 34px;
-  --text-h1--line-height: 40px;
-  --text-h1--font-weight: 700;
-  --text-h2: 28px;
-  --text-h2--line-height: 34px;
-  --text-h2--font-weight: 700;
-  --text-h3: 22px;
-  --text-h3--line-height: 28px;
-  --text-h3--font-weight: 700;
-  --text-h4: 18px;
-  --text-h4--line-height: 24px;
-  --text-h4--font-weight: 700;
-  --text-overline: 12px;
-  --text-overline--line-height: 16px;
-  --text-overline--font-weight: 700;
-  --text-overline--letter-spacing: 0.12em;
-  --text-body-lg: 18px;
-  --text-body-lg--line-height: 29px;
-  --text-body-lg--font-weight: 400;
-  --text-body: 16px;
-  --text-body--line-height: 26px;
-  --text-body--font-weight: 400;
-  --text-body-strong: 16px;
-  --text-body-strong--line-height: 26px;
-  --text-body-strong--font-weight: 600;
-  --text-label: 14px;
-  --text-label--line-height: 20px;
-  --text-label--font-weight: 600;
-  --text-small: 14px;
-  --text-small--line-height: 22px;
-  --text-small--font-weight: 400;
-  --text-caption: 12px;
-  --text-caption--line-height: 16px;
-  --text-caption--font-weight: 400;
-
-  /* Spacing: 4px base. space-1 ... space-8. */
-  --spacing-1: 4px;
-  --spacing-2: 8px;
-  --spacing-3: 12px;
-  --spacing-4: 16px;
-  --spacing-5: 24px;
-  --spacing-6: 32px;
-  --spacing-7: 48px;
-  --spacing-8: 64px;
-
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 30px;
-  --radius-pill: 9999px;
-
-  --shadow-sm: 0 1px 2px rgba(3, 12, 64, 0.08);
-  --shadow-md: 0 4px 16px rgba(3, 12, 64, 0.12);
+@theme {
+  /* aspect ratios — content constants */
+  --aspect-media: 4 / 3;
+  --aspect-banner: 3 / 2;
+  /* type scale — stepped: 12 → 13 → 14 → 16 → 18 → 20 → 24 → 32 */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.45;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.45;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.5;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.55;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.4;
+  --text-h2: 1.25rem;
+  --text-h2--line-height: 1.35;
+  --text-h1: 1.5rem;
+  --text-h1--line-height: 1.3;
+  --text-display: 2rem;
+  --text-display--line-height: 1.2;
+  --text-h4: 1rem;
+  --text-h4--line-height: 1.4;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.4;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.4;
+  --text-body-strong: 0.875rem;
+  --text-body-strong--line-height: 1.5;
 }
 
-:root {
-  color-scheme: light;
-  --gradient-brand: linear-gradient(
-    135deg,
-    #d93240 0%,
-    #bf2a52 33%,
-    #a6249d 66%,
-    #7957f2 100%
-  );
-  --gradient-logo: linear-gradient(180deg, #dd3029 0%, #931ea2 100%);
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  /* cherry-picked from Angela's template: Montserrat (display) + Source Sans 3 (sans) */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), "Montserrat", system-ui, sans-serif;
+  --font-heading: var(--font-montserrat), "Montserrat", system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-light: var(--destructive-light);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  /* brand accents (LEAD identity) */
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-light: var(--brand-red-light);
+  --color-brand-rose: var(--brand-rose);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-purple-light: var(--brand-purple-light);
+  --color-brand-orange: var(--brand-orange);
+  /* Angela's semantic vocabulary (surface/ink/line) — aliases of the base tokens */
+  --color-surface: var(--color-background);
+  --color-surface-alt: var(--color-muted);
+  --color-surface-raised: var(--color-card);
+  --color-surface-inverse: var(--color-foreground);
+  --color-line: var(--color-border);
+  --color-line-strong: var(--color-border);
+  --color-heading: var(--color-foreground);
+  --color-ink: var(--color-foreground);
+  --color-ink-muted: var(--color-muted-foreground);
+  --color-ink-disabled: var(--color-muted-foreground);
+  --color-on-inverse: var(--color-background);
+  --color-primary-strong: var(--color-primary);
+  --color-on-primary: var(--color-primary-foreground);
+  --color-primary-soft: var(--color-primary);
+  --color-accent-soft: var(--color-accent);
+  --color-danger: var(--color-destructive);
+  --color-danger-soft: var(--color-destructive);
+  --color-success-soft: var(--color-success);
+  --color-focus-ring: var(--color-ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Dark theme: follows the OS, or force with <html data-theme="dark|light">.
-   Components never need dark: variants; the semantic tokens switch. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --color-surface: #030c40;
-    --color-surface-alt: #0a1128;
-    --color-surface-raised: #1e2a4a;
-    --color-surface-inverse: #1e2a4a;
-    --color-line: #2c3860;
-    --color-line-strong: #7d88ad;
-    --color-heading: #ffffff;
-    --color-ink: #e8eaf2;
-    --color-ink-muted: #aab2cc;
-    --color-ink-disabled: #5d6789;
-    --color-on-inverse: #ffffff;
-    --color-primary: #e0a3e0;
-    --color-primary-strong: #ecc3ec;
-    --color-on-primary: #030c40;
-    --color-primary-soft: #2e1440;
-    --color-accent: #9b8cf0;
-    --color-accent-soft: #1f1a52;
-    --color-danger: #ff8a80;
-    --color-danger-soft: #3a1420;
-    --color-success: #5fd3a5;
-    --color-success-soft: #0f2e2a;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-  }
-}
+/* LEAD brand — dark navy + red → rose → purple.
+   Base: abi's system. Identity colors cherry-picked from Angela's official palette. */
+:root,
+.dark {
+  --card-spacing: 1rem;
+  --brand-red: oklch(0.56 0.21 20);
+  --brand-red-light: oklch(0.78 0.14 20); /* text links + focus ring on navy */
+  --brand-rose: oklch(0.487 0.2087 322.04);
+  --brand-purple: oklch(0.5584 0.2066 286.65);
+  --brand-purple-light: oklch(0.72 0.15 287); /* interactive text/icons */
+  --brand-orange: oklch(0.55 0.19 45); /* burnt orange — avatar */
+  --brand-navy: #030c40; /* official LEAD navy */
+  --brand-navy-900: #0a1128;
+  --brand-navy-700: #1e2a4a;
+  --brand-violet: #7957f2;
+  --logo-red: #dd3029;
+  --logo-purple: #931ea2;
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --color-surface: #030c40;
-  --color-surface-alt: #0a1128;
-  --color-surface-raised: #1e2a4a;
-  --color-surface-inverse: #1e2a4a;
-  --color-line: #2c3860;
-  --color-line-strong: #7d88ad;
-  --color-heading: #ffffff;
-  --color-ink: #e8eaf2;
-  --color-ink-muted: #aab2cc;
-  --color-ink-disabled: #5d6789;
-  --color-on-inverse: #ffffff;
-  --color-primary: #e0a3e0;
-  --color-primary-strong: #ecc3ec;
-  --color-on-primary: #030c40;
-  --color-primary-soft: #2e1440;
-  --color-accent: #9b8cf0;
-  --color-accent-soft: #1f1a52;
-  --color-danger: #ff8a80;
-  --color-danger-soft: #3a1420;
-  --color-success: #5fd3a5;
-  --color-success-soft: #0f2e2a;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-}
-
-/* Brand gradient: one element per view at most, never in app UI controls. */
-@utility gradient-brand {
-  background-image: var(--gradient-brand);
-}
-
-/* Only to echo the logo mark, e.g. a thin rule under the header. */
-@utility gradient-logo {
-  background-image: var(--gradient-logo);
+  --background: oklch(0.235 0.105 272);
+  --foreground: oklch(0.955 0.012 272);
+  --card: oklch(0.28 0.105 272);
+  --card-foreground: oklch(0.955 0.015 272);
+  --popover: oklch(0.315 0.10 272);
+  --popover-foreground: oklch(0.955 0.012 272);
+  --primary: oklch(0.5584 0.2066 286.65);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.31 0.10 272);
+  --secondary-foreground: oklch(0.93 0.015 272);
+  --muted: oklch(0.30 0.10 272);
+  --muted-foreground: oklch(0.75 0.05 272);
+  --accent: oklch(0.52 0.2 322);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.57 0.22 24);
+  --destructive-light: oklch(0.75 0.15 24);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.74 0.16 155);
+  --success-foreground: oklch(0.16 0.04 155);
+  --border: oklch(0.75 0.07 272 / 20%);
+  --input: oklch(0.78 0.06 272 / 26%);
+  --ring: oklch(0.75 0.12 287);
+  --chart-1: oklch(0.6294 0.2102 21.34);
+  --chart-2: oklch(0.487 0.2087 322.04);
+  --chart-3: oklch(0.5584 0.2066 286.65);
+  --chart-4: oklch(0.5584 0.2066 286.65);
+  --chart-5: oklch(0.52 0.2 4);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.2 0.095 272);
+  --sidebar-foreground: oklch(0.93 0.012 272);
+  --sidebar-primary: oklch(0.5584 0.2066 286.65);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.30 0.10 272);
+  --sidebar-accent-foreground: oklch(0.955 0.012 272);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.75 0.12 287);
 }
 
 @layer base {
-  body {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--color-ink);
-    background-color: var(--color-surface);
+  * {
+    @apply border-border outline-ring/50;
   }
-
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-display);
-    color: var(--color-heading);
+  }
+  /* hide native number spinners (inconsistent on dark theme) */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
     margin: 0;
   }
-  h1 {
-    font-size: var(--text-h1);
-    line-height: var(--text-h1--line-height);
-    font-weight: 700;
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
-  h2 {
-    font-size: var(--text-h2);
-    line-height: var(--text-h2--line-height);
-    font-weight: 700;
-  }
-  h3 {
-    font-size: var(--text-h3);
-    line-height: var(--text-h3--line-height);
-    font-weight: 700;
-  }
-  h4 {
-    font-size: var(--text-h4);
-    line-height: var(--text-h4--line-height);
-    font-weight: 700;
-  }
+}
 
-  /* Keyboard focus on every interactive element. Never remove it. */
-  :where(
-    a,
-    button,
-    input,
-    select,
-    textarea,
-    summary,
-    [tabindex]
-  ):focus-visible {
-    outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
-  }
+/* destructive/brand text color — applied by variant so twMerge can't drop it (custom text-* sizes collide) */
+button[data-variant="destructive"],
+button[data-variant="destructive-outline"],
+button[data-variant="destructive-ghost"] {
+  color: var(--destructive-light);
+}
+button[data-variant="destructive-outline"]:hover,
+button[data-variant="destructive-ghost"]:hover {
+  color: var(--destructive-light);
+}
+button[data-variant="brand-ghost"] {
+  color: var(--brand-purple-light);
+}
+button[data-variant="brand-ghost"]:hover {
+  color: var(--brand-purple-light);
+}
+button[data-variant="link"] {
+  color: var(--primary);
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      transition-duration: 0.01ms !important;
-    }
-  }
+@utility brand-gradient {
+  background-image: linear-gradient(
+    120deg,
+    var(--brand-orange),
+    var(--brand-red) 40%,
+    var(--brand-rose) 72%,
+    var(--brand-purple)
+  );
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    120deg,
+    var(--brand-orange),
+    var(--brand-red) 40%,
+    var(--brand-rose) 72%,
+    var(--brand-purple)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility brand-button {
+  background-image: linear-gradient(120deg, var(--brand-purple), var(--brand-rose));
+}
+
+@utility card-surface {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--brand-purple) 5%, var(--card)),
+    var(--card) 30%
+  );
+}
+
+@utility bg-ambient {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--card) 55%, transparent),
+    transparent 42rem
+  );
+}
+
+@utility brand-progress {
+  background-image: linear-gradient(
+    90deg,
+    var(--brand-purple),
+    var(--brand-purple-light)
+  );
 }

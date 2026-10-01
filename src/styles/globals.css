@@ -165,6 +165,43 @@
   --sidebar-ring: oklch(0.75 0.12 287);
 }
 
+/* Light theme: LEAD identity stays, surfaces go light. Opt-in via <html data-theme="light">. */
+:root[data-theme="light"] {
+  --background: oklch(0.975 0.008 272);
+  --foreground: oklch(0.28 0.05 272);
+  --card: oklch(0.995 0.004 272);
+  --card-foreground: oklch(0.28 0.05 272);
+  --popover: oklch(0.995 0.004 272);
+  --popover-foreground: oklch(0.28 0.05 272);
+  --secondary: oklch(0.93 0.012 272);
+  --secondary-foreground: oklch(0.28 0.05 272);
+  --muted: oklch(0.94 0.012 272);
+  --muted-foreground: oklch(0.5 0.03 272);
+  --accent: oklch(0.5584 0.2066 286.65);
+  --accent-foreground: oklch(1 0 0);
+  --primary: oklch(0.5584 0.2066 286.65);
+  --primary-foreground: oklch(1 0 0);
+  --destructive: oklch(0.52 0.22 24);
+  --destructive-light: oklch(0.45 0.22 24);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.58 0.14 155);
+  --success-foreground: oklch(1 0 0);
+  --border: oklch(0.85 0.02 272 / 60%);
+  --input: oklch(0.8 0.02 272 / 70%);
+  --ring: oklch(0.52 0.2 287);
+  --brand-purple-light: oklch(0.52 0.2 287);
+  --brand-red-light: oklch(0.55 0.22 24);
+  --sidebar: oklch(0.96 0.01 272);
+  --sidebar-foreground: oklch(0.28 0.05 272);
+  --sidebar-primary: oklch(0.5584 0.2066 286.65);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.93 0.012 272);
+  --sidebar-accent-foreground: oklch(0.28 0.05 272);
+  --sidebar-border: oklch(0.28 0.05 272 / 12%);
+  --sidebar-ring: oklch(0.52 0.2 287);
+  --card-spacing: 1rem;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Bell, Building2, ChevronsUpDown, Link2, Mail, Plus, Search, Settings, ShieldCheck, User, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";

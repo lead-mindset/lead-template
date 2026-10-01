@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Footer } from "@/components/brand/Footer";
 import { Header } from "@/components/brand/Header";
+import Script from "next/script";
 import { themeScript } from "@/components/theme/themeScript";
 import { routing } from "@/i18n/routing";
 import { montserrat, sourceSans } from "@/styles/fonts";
@@ -41,9 +42,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       // data-theme is set by themeScript before hydration.
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
+      <Script id="theme-script" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
       <body className="flex min-h-screen flex-col antialiased">
         <NextIntlClientProvider>
           <Header />

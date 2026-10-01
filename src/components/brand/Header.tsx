@@ -1,13 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { buttonClasses } from "@/components/ui/Button";
-import { Header as UIHeader } from "@/components/ui/Header";
-import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 import { Link, usePathname } from "@/i18n/navigation";
-import { withBasePath } from "@/lib/basePath";
+import { cn } from "@/lib/cn";
 
 const NAV = [
   { key: "home", href: "/" },
@@ -15,10 +14,11 @@ const NAV = [
   { key: "designSystem", href: "/design-system" },
 ] as const;
 
-/** App header: the design system Header wired to this app's routes and locales. */
+/** App header in the lead-platform-prototype style: brand L + nav pills + actions. */
 export function Header() {
   const t = useTranslations("Header");
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   const links = NAV.map(({ key, href }) => ({
     label: t(key),
@@ -27,58 +27,68 @@ export function Header() {
   }));
 
   return (
-    <>
-      <UIHeader
-        logoSrc={withBasePath("/lead-mark.png")}
-        links={links}
-        navLabel={t("nav")}
-        cta={
-          <>
-            <ThemeToggle className="hidden sm:flex" />
-            <LocaleSwitcher />
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-6">
+        <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+          <span className="brand-gradient flex size-8 items-center justify-center rounded-lg text-sm font-black tracking-tight text-primary-foreground">
+            L
+          </span>
+          <span className="text-lg font-bold tracking-tight">LEAD</span>
+        </Link>
+
+        <nav className="ml-4 hidden items-center gap-1 md:flex" aria-label={t("nav")}>
+          {links.map((link) => (
             <Link
-              href="/login"
-              className={buttonClasses({
-                variant: "secondary",
-                size: "sm",
-                className: "hidden sm:inline-flex",
-              })}
+              key={link.href}
+              href={link.href}
+              aria-current={link.active ? "page" : undefined}
+              className={cn(
+                "rounded-full px-3 py-1.5 text-small font-medium transition-colors",
+                link.active ? "bg-muted font-semibold text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
             >
-              {t("login")}
+              {link.label}
             </Link>
-            {/* Under 640px the design system hides the nav; the app provides this menu. */}
-            <details className="relative sm:hidden">
-              <summary
-                className="ld-header-icon list-none [&::-webkit-details-marker]:hidden"
-                aria-label={t("menu")}
-              >
-                <Icon name="menu" size={20} />
-              </summary>
-              <ul className="absolute right-0 z-10 mt-2 flex w-48 flex-col rounded-md border border-line bg-surface-raised p-2 [box-shadow:var(--shadow-md)]">
-                {[
-                  ...links,
-                  { label: t("login"), href: "/login", active: false },
-                ].map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      aria-current={link.active ? "page" : undefined}
-                      className="block rounded-sm px-3 py-2 text-label text-ink hover:bg-primary-soft aria-[current=page]:text-primary"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-                <li className="mt-1 border-t border-line pt-1">
-                  <ThemeToggle variant="menu" />
-                </li>
-              </ul>
-            </details>
-          </>
-        }
-      />
-      {/* gradient-logo: a thin rule echoing the logo mark. */}
-      <div className="gradient-logo h-[2px]" aria-hidden="true" />
-    </>
+          ))}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle className="hidden sm:flex" />
+          <LocaleSwitcher />
+          <Button size="sm" variant="secondary" asChild className="hidden sm:inline-flex">
+            <Link href="/login">{t("login")}</Link>
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="md:hidden"
+            aria-label={open ? t("menu") : t("menu")}
+            aria-expanded={open}
+            onClick={() => setOpen((prev) => !prev)}
+          >
+            <span aria-hidden>{open ? "✕" : "☰"}</span>
+          </Button>
+        </div>
+      </div>
+
+      {open && (
+        <nav className="border-t border-border/60 bg-background/95 px-6 py-3 backdrop-blur md:hidden" aria-label={t("nav")}>
+          {[...links, { label: t("login"), href: "/login", active: false }].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              aria-current={link.active ? "page" : undefined}
+              className={cn(
+                "block rounded-lg px-3 py-2.5 text-body font-medium transition-colors",
+                link.active ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      )}
+    </header>
   );
 }

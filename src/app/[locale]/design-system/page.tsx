@@ -1,455 +1,527 @@
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { Button } from "@/components/ui/Button";
-import { Icon, ICON_NAMES } from "@/components/ui/Icon";
-import { Link } from "@/components/ui/Link";
-import { Pagination } from "@/components/ui/Pagination";
-import { ProgressBar } from "@/components/ui/ProgressBar";
-import { SegmentedControl } from "@/components/ui/SegmentedControl";
-import { TextField } from "@/components/ui/TextField";
-import { Toggle } from "@/components/ui/Toggle";
-import { Table } from "@/components/ui/Table";
-import { Tooltip } from "@/components/ui/Tooltip";
+"use client";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
+import { Bell, Building2, ChevronsUpDown, Link2, Mail, Plus, Search, Settings, ShieldCheck, User, X } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { FilterChip } from "@/components/ui/filter-chip";
+import { Segmented } from "@/components/ui/segmented";
+import { SidebarOption } from "@/components/ui/sidebar-option";
+import { InitialsAvatar } from "@/components/initials-avatar";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { Chip } from "@/components/ui/chip";
+import { IconTile } from "@/components/ui/icon-tile";
+import { Field } from "@/components/form";
+import { PhotoUpload } from "@/components/photo-upload";
 
-const SEMANTIC_COLORS = [
-  "surface",
-  "surface-alt",
-  "surface-raised",
-  "surface-inverse",
-  "line",
-  "line-strong",
-  "heading",
-  "ink",
-  "ink-muted",
-  "ink-disabled",
-  "on-inverse",
-  "primary",
-  "primary-strong",
-  "on-primary",
-  "primary-soft",
-  "accent",
-  "accent-soft",
-  "danger",
-  "danger-soft",
-  "success",
-  "success-soft",
-  "focus-ring",
-];
-
-const IDENTITY_COLORS = [
-  "brand-navy",
-  "brand-navy-900",
-  "brand-navy-700",
-  "brand-red",
-  "brand-magenta",
-  "brand-purple",
-  "brand-violet",
-  "logo-red",
-  "logo-purple",
-];
-
-// Literal class names so Tailwind picks them up.
-const TYPE_STYLES = [
-  { name: "wordmark", className: "font-display text-wordmark uppercase" },
-  { name: "display", className: "font-display text-display" },
-  { name: "h1", className: "font-display text-h1" },
-  { name: "h2", className: "font-display text-h2" },
-  { name: "h3", className: "font-display text-h3" },
-  { name: "h4", className: "font-display text-h4" },
-  { name: "overline", className: "font-display text-overline uppercase" },
-  { name: "body-lg", className: "text-body-lg" },
-  { name: "body", className: "text-body" },
-  { name: "body-strong", className: "text-body-strong" },
-  { name: "label", className: "text-label" },
-  { name: "small", className: "text-small" },
-  { name: "caption", className: "text-caption" },
-] as const;
-
-type ParticipantStatus = "enrolled" | "pending" | "cancelled";
-
-const TABLE_ROWS: {
-  id: string;
-  progress: number;
-  status: ParticipantStatus;
-}[] = [
-  { id: "r1", progress: 100, status: "enrolled" },
-  { id: "r2", progress: 65, status: "enrolled" },
-  { id: "r3", progress: 20, status: "pending" },
-  { id: "r4", progress: 0, status: "cancelled" },
-];
-
-const STATUS_STYLE: Record<
-  ParticipantStatus,
-  { icon: "check-circle" | "info" | "x"; className: string }
-> = {
-  enrolled: { icon: "check-circle", className: "text-success" },
-  pending: { icon: "info", className: "text-ink-muted" },
-  cancelled: { icon: "x", className: "text-danger" },
-};
-
-/** Status always pairs color with an icon and words. */
-function Status({
-  status,
-  label,
-}: {
-  status: ParticipantStatus;
-  label: string;
-}) {
-  const style = STATUS_STYLE[status];
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <span
-      className={`inline-flex items-center gap-1 font-semibold ${style.className}`}
-    >
-      <Icon name={style.icon} size={16} />
-      {label}
-    </span>
-  );
-}
-
-const SPACING = [1, 2, 3, 4, 5, 6, 7, 8];
-const RADII = ["sm", "md", "lg", "xl", "pill"];
-const SHADOWS = ["sm", "md"];
-const GRADIENTS = ["brand", "logo"];
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "DesignSystemPage" });
-  return { title: t("title") };
-}
-
-function Section({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="flex flex-col gap-5 border-t border-line pt-7">
-      <div className="flex flex-col gap-2">
-        <h2>{title}</h2>
-        {description && <p className="text-ink-muted">{description}</p>}
-      </div>
-      {children}
+    <section className="rounded-xl border border-border/60 bg-card p-(--card-spacing)">
+      <h2 className="text-h3 font-semibold">{title}</h2>
+      <div className="mt-5">{children}</div>
     </section>
   );
 }
 
-function TokenName({ children }: { children: ReactNode }) {
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <code className="font-mono text-caption text-ink-muted">{children}</code>
-  );
-}
-
-function Swatches({ names }: { names: string[] }) {
-  return (
-    <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6">
-      {names.map((name) => (
-        <li key={name} className="flex flex-col gap-2">
-          <div
-            className="h-7 rounded-md border border-line"
-            style={{ background: `var(--color-${name})` }}
-          />
-          <TokenName>{name}</TokenName>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-export default async function DesignSystemPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("DesignSystemPage");
-
-  return (
-    <div className="mx-auto flex max-w-[1200px] flex-col gap-7 px-4 py-7 sm:py-8">
-      <header className="flex max-w-3xl flex-col gap-4">
-        <p className="font-display text-overline text-primary uppercase">
-          {t("overline")}
-        </p>
-        <h1>{t("title")}</h1>
-        <p className="text-body-lg">{t("intro")}</p>
-      </header>
-
-      <Section title={t("colors.title")} description={t("colors.semantic")}>
-        <Swatches names={SEMANTIC_COLORS} />
-        <p className="text-ink-muted">{t("colors.identity")}</p>
-        <Swatches names={IDENTITY_COLORS} />
-      </Section>
-
-      <Section
-        title={t("typography.title")}
-        description={t("typography.description")}
-      >
-        <ul className="flex flex-col gap-4">
-          {TYPE_STYLES.map((style) => (
-            <li
-              key={style.name}
-              className="grid gap-1 sm:grid-cols-[120px_1fr] sm:items-baseline sm:gap-5"
-            >
-              <TokenName>{style.name}</TokenName>
-              <span className={`${style.className} text-heading`}>
-                {t(`typography.samples.${style.name}`)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section
-        title={t("spacing.title")}
-        description={t("spacing.description")}
-      >
-        <ul className="flex flex-col gap-2">
-          {SPACING.map((n) => (
-            <li key={n} className="flex items-center gap-4">
-              <span className="w-[72px]">
-                <TokenName>{`space-${n}`}</TokenName>
-              </span>
-              <span
-                className="h-4 rounded-sm bg-accent"
-                style={{ width: `var(--spacing-${n})` }}
-              />
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title={t("shape.title")} description={t("shape.description")}>
-        <ul className="flex flex-wrap gap-5">
-          {RADII.map((r) => (
-            <li key={r} className="flex flex-col items-center gap-2">
-              <div
-                className="size-8 border border-line-strong bg-primary-soft"
-                style={{ borderRadius: `var(--radius-${r})` }}
-              />
-              <TokenName>{`radius-${r}`}</TokenName>
-            </li>
-          ))}
-          {SHADOWS.map((s) => (
-            <li key={s} className="flex flex-col items-center gap-2">
-              <div
-                className="size-8 rounded-md bg-surface-raised"
-                style={{ boxShadow: `var(--shadow-${s})` }}
-              />
-              <TokenName>{`shadow-${s}`}</TokenName>
-            </li>
-          ))}
-          {GRADIENTS.map((g) => (
-            <li key={g} className="flex flex-col items-center gap-2">
-              <div
-                className="size-8 rounded-md"
-                style={{ backgroundImage: `var(--gradient-${g})` }}
-              />
-              <TokenName>{`gradient-${g}`}</TokenName>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section
-        title={t("components.title")}
-        description={t("components.description")}
-      >
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Demo title="Button">
-            <div className="flex flex-wrap items-center gap-3">
-              <Button>{t("components.primary")}</Button>
-              <Button variant="secondary" iconRight="chevron-down">
-                {t("components.secondary")}
-              </Button>
-              <Button variant="ghost">{t("components.ghost")}</Button>
-              <Button
-                variant="secondary"
-                iconOnly="arrow-left"
-                aria-label={t("components.back")}
-              />
-              <Button disabled>{t("components.disabled")}</Button>
-            </div>
-            <div className="flex flex-col items-start gap-2">
-              <Button variant="gradient" size="lg" iconRight="arrow-right">
-                {t("components.gradient")}
-              </Button>
-              <p className="text-small text-ink-muted">
-                {t("components.gradientNote")}
-              </p>
-            </div>
-          </Demo>
-
-          <Demo title="Link">
-            <div className="flex flex-wrap items-center gap-5">
-              <Link href="#components">{t("components.link")}</Link>
-              <Link href="#components" iconRight="arrow-right">
-                {t("components.linkIcon")}
-              </Link>
-              <Link disabled>{t("components.disabled")}</Link>
-            </div>
-          </Demo>
-
-          <Demo title="Toggle">
-            <div className="flex flex-wrap items-center gap-5">
-              <Toggle label={t("components.toggle")} defaultChecked />
-              <Toggle label={t("components.toggle")} />
-              <Toggle label={t("components.disabled")} disabled />
-            </div>
-          </Demo>
-
-          <Demo title="SegmentedControl">
-            <SegmentedControl
-              label={t("components.segmentedLabel")}
-              className="self-start"
-              options={[
-                { value: "day", label: t("components.day") },
-                { value: "week", label: t("components.week") },
-                { value: "month", label: t("components.month") },
-              ]}
-            />
-          </Demo>
-
-          <Demo title="TextField">
-            <div className="grid gap-5 sm:grid-cols-2">
-              <TextField
-                label={t("components.email")}
-                type="email"
-                placeholder={t("components.emailPlaceholder")}
-                message={t("components.emailHelp")}
-              />
-              <TextField
-                label={t("components.password")}
-                type="password"
-                defaultValue={t("components.passwordValue")}
-                state="error"
-                message={t("components.passwordError")}
-              />
-              <TextField
-                label={t("components.name")}
-                defaultValue={t("components.nameValue")}
-                state="success"
-                message={t("components.nameSuccess")}
-              />
-              <TextField
-                label={t("components.disabled")}
-                placeholder={t("components.emailPlaceholder")}
-                disabled
-              />
-            </div>
-          </Demo>
-
-          <Demo title="Breadcrumbs">
-            <Breadcrumbs
-              items={[
-                { label: t("components.crumbHome"), href: "#components" },
-                { label: t("components.crumbPrograms"), href: "#components" },
-                { label: t("components.crumbCurrent") },
-              ]}
-            />
-          </Demo>
-
-          <Demo title="Pagination">
-            <Pagination total={5} defaultPage={2} />
-          </Demo>
-
-          <Demo title="ProgressBar">
-            <ProgressBar value={65} label={t("components.progress")} />
-          </Demo>
-
-          <Demo title="Table" className="lg:col-span-2">
-            <Table
-              caption={t("components.table.caption")}
-              columns={[
-                { key: "name", header: t("components.table.name") },
-                { key: "program", header: t("components.table.program") },
-                {
-                  key: "progress",
-                  header: t("components.table.progress"),
-                  align: "end",
-                  render: (row) => `${row.progress}%`,
-                },
-                {
-                  key: "status",
-                  header: t("components.table.status"),
-                  render: (row) => (
-                    <Status
-                      status={row.status}
-                      label={t(`components.table.statuses.${row.status}`)}
-                    />
-                  ),
-                },
-              ]}
-              rows={TABLE_ROWS.map((row) => ({
-                ...row,
-                name: t(`components.table.rows.${row.id}.name`),
-                program: t(`components.table.rows.${row.id}.program`),
-              }))}
-              getRowKey={(row) => row.id}
-              selectedKey="r2"
-            />
-            <p className="text-small text-ink-muted">
-              {t("components.table.note")}
-            </p>
-            <Table
-              caption={t("components.table.emptyCaption")}
-              columns={[
-                { key: "name", header: t("components.table.name") },
-                { key: "program", header: t("components.table.program") },
-              ]}
-              rows={[] as { id: string }[]}
-              getRowKey={(row) => row.id}
-              emptyMessage={t("components.table.empty")}
-            />
-          </Demo>
-
-          <Demo title="Tooltip">
-            <div className="flex items-center gap-2">
-              <span>{t("components.tooltipTrigger")}</span>
-              <Tooltip content={t("components.tooltip")} />
-            </div>
-          </Demo>
-
-          <Demo title="Icon">
-            <ul className="flex flex-wrap gap-4 text-heading">
-              {ICON_NAMES.map((name) => (
-                <li
-                  key={name}
-                  className="flex w-[88px] flex-col items-center gap-1"
-                >
-                  <Icon name={name} />
-                  <TokenName>{name}</TokenName>
-                </li>
-              ))}
-            </ul>
-          </Demo>
-        </div>
-      </Section>
+    <div className="mb-4 last:mb-0">
+      <p className="mb-2 text-caption font-medium text-muted-foreground">{label}</p>
+      <div className="flex flex-wrap items-center gap-3">{children}</div>
     </div>
   );
 }
 
-function Demo({
-  title,
-  className,
-  children,
-}: {
-  title: string;
-  className?: string;
-  children: ReactNode;
-}) {
+const swatches: { name: string; className: string; token: string }[] = [
+  { name: "Fondo", className: "bg-background ring-1 ring-foreground/10", token: "--background" },
+  { name: "Card", className: "bg-card ring-1 ring-foreground/10", token: "--card" },
+  { name: "Primario", className: "bg-primary", token: "--primary" },
+  { name: "Secondary", className: "bg-secondary", token: "--secondary" },
+  { name: "Muted", className: "bg-muted ring-1 ring-foreground/10", token: "--muted" },
+  { name: "Accent", className: "bg-accent", token: "--accent" },
+  { name: "Destructive", className: "bg-destructive", token: "--destructive" },
+  { name: "Success", className: "bg-success", token: "--success" },
+  { name: "Border", className: "border border-foreground/20", token: "--border" },
+  { name: "Marca morado", className: "bg-brand-purple", token: "--brand-purple" },
+  { name: "Marca rosa", className: "bg-brand-rose", token: "--brand-rose" },
+  { name: "Marca rojo", className: "bg-brand-red", token: "--brand-red" },
+  { name: "Purple light", className: "bg-brand-purple-light", token: "--brand-purple-light" },
+];
+
+const typeSamples: { name: string; className: string }[] = [
+  { name: "caption", className: "text-caption" },
+  { name: "small", className: "text-small" },
+  { name: "body", className: "text-body" },
+  { name: "body-lg", className: "text-body-lg" },
+  { name: "h3", className: "text-h3" },
+  { name: "h2", className: "text-h2" },
+  { name: "h1", className: "text-h1" },
+  { name: "display", className: "text-display" },
+];
+
+export default function DesignSystemPage() {
   return (
-    <div
-      id={title === "Button" ? "components" : undefined}
-      className={`flex min-w-0 flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5 ${className ?? ""}`}
-    >
-      <h3>{title}</h3>
-      {children}
+    <div className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">
+      <header className="mb-8">
+        <h1 className="text-display font-bold tracking-tight">Sistema de diseño</h1>
+        <p className="mt-2 text-body text-muted-foreground">
+          Auditoría de todos los componentes, variantes y estados de la plataforma. Todo sale de los
+          tokens definidos en <code className="rounded bg-muted px-1.5 py-0.5 text-small">globals.css</code>.
+        </p>
+      </header>
+
+      <div className="mb-6 rounded-xl border border-border/60 bg-muted/30 px-4 py-3 text-small text-muted-foreground">
+        <p className="font-semibold text-foreground">Regla de primitivas — nada hardcodeado</p>
+        <p className="mt-1">
+          Estados → <code className="rounded bg-muted px-1 text-caption">StatusBadge</code> · etiquetas →{" "}
+          <code className="rounded bg-muted px-1 text-caption">Chip</code> · avatares →{" "}
+          <code className="rounded bg-muted px-1 text-caption">InitialsAvatar</code> · icono en cuadro →{" "}
+          <code className="rounded bg-muted px-1 text-caption">IconTile</code> · selección →{" "}
+          <code className="rounded bg-muted px-1 text-caption">FilterChip</code>/<code className="rounded bg-muted px-1 text-caption">Segmented</code> ·
+          acciones → variantes de <code className="rounded bg-muted px-1 text-caption">Button</code>. Nunca clases sueltas
+          de color en páginas.
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        <Section title="Tokens de color">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5">
+            {swatches.map((swatch) => (
+              <div key={swatch.name} className="rounded-lg bg-muted/30 p-2">
+                <div className={`h-12 w-full rounded-md ${swatch.className}`} />
+                <p className="mt-2 text-small font-medium">{swatch.name}</p>
+                <p className="text-caption text-muted-foreground">{swatch.token}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Botones — variantes">
+          <Row label="default (gradiente de marca)">
+            <Button>Acción principal</Button>
+            <Button disabled>Deshabilitado</Button>
+          </Row>
+          <Row label="secondary">
+            <Button variant="secondary">Secundario</Button>
+            <Button variant="secondary" disabled>Deshabilitado</Button>
+          </Row>
+          <Row label="outline">
+            <Button variant="outline">Contorno</Button>
+            <Button variant="outline" disabled>Deshabilitado</Button>
+          </Row>
+          <Row label="ghost">
+            <Button variant="ghost">Fantasma</Button>
+          </Row>
+          <Row label="destructive">
+            <Button variant="destructive">Eliminar</Button>
+          </Row>
+          <Row label="link">
+            <Button variant="link">Enlace</Button>
+          </Row>
+        </Section>
+
+        <Section title="Botones — tamaños">
+          <Row label="xs · sm · default · lg">
+            <Button size="xs">xs</Button>
+            <Button size="sm">sm</Button>
+            <Button size="default">default</Button>
+            <Button size="lg">lg</Button>
+          </Row>
+          <Row label="icon · icon-sm · icon-lg">
+            <Button size="icon" aria-label="Buscar"><Search /></Button>
+            <Button size="icon-sm" variant="secondary" aria-label="Plus"><Plus /></Button>
+            <Button size="icon-lg" variant="outline" aria-label="Mail"><Mail /></Button>
+          </Row>
+        </Section>
+
+        <Section title="Botones — sistema destructivo">
+          <Row label="gravedad máxima · relleno suave (Revocar acceso, Solicitar borrado)">
+            <Button variant="destructive">Revocar acceso</Button>
+          </Row>
+          <Row label="media · contorno rojo (Rechazar en colas)">
+            <Button variant="destructive-outline"><X className="size-3.5" /> Rechazar</Button>
+          </Row>
+          <Row label="terciaria · solo icono (Quitar item, Eliminar)">
+            <Button variant="destructive-ghost" size="icon-sm" aria-label="Quitar item"><X className="size-3.5" /></Button>
+          </Row>
+          <div className="mb-4 rounded-xl border border-border/60 bg-muted/30 px-4 py-3 text-small text-muted-foreground">
+            <p className="font-semibold text-foreground">Regla destructiva</p>
+            <p className="mt-1">
+              Elige la variante según la <strong>gravedad real</strong>: solo lo que quita un acceso activo o borra es{" "}
+              <code className="rounded bg-muted px-1 text-caption">destructive</code>. Cancelar algo pendiente (nada concedido
+              aún) es <code className="rounded bg-muted px-1 text-caption">outline</code> neutro. Nunca colores{" "}
+              <code className="rounded bg-muted px-1 text-caption">text-destructive-…</code> sueltos en un Button.
+            </p>
+          </div>
+        </Section>
+
+        <Section title="Botones — acción de marca suave">
+          <Row label="brand-ghost (agregar, secundaria de marca)">
+            <Button variant="brand-ghost"><Plus className="size-3.5" /> Agregar item</Button>
+          </Row>
+        </Section>
+
+        <Section title="Filtros — estados seleccionado">
+          <Row label="FilterChip">
+            <FilterChip active onClick={() => {}}>Seleccionado</FilterChip>
+            <FilterChip active={false} onClick={() => {}}>No seleccionado</FilterChip>
+          </Row>
+          <Row label="Segmented">
+            <Segmented
+              value="a"
+              onChange={() => {}}
+              options={[
+                { value: "a", label: "Opción A" },
+                { value: "b", label: "Opción B" },
+              ]}
+            />
+          </Row>
+          <Row label="SidebarOption">
+            <div className="w-44 max-w-full">
+              <SidebarOption active onClick={() => {}}>Seleccionado</SidebarOption>
+              <SidebarOption active={false} onClick={() => {}}>No seleccionado</SidebarOption>
+            </div>
+          </Row>
+        </Section>
+
+        <Section title="Badges">
+          <Row label="variantes">
+            <Badge>Default</Badge>
+            <Badge variant="secondary">Secondary</Badge>
+            <Badge variant="outline">Outline</Badge>
+            <Badge variant="destructive">Destructive</Badge>
+            <Badge className="rounded-full bg-brand-purple/15 font-semibold text-brand-purple-light">Capítulo</Badge>
+            <Badge className="rounded-full bg-brand-purple/15 font-medium text-brand-purple-light">Área</Badge>
+          </Row>
+        </Section>
+
+        <Section title="Badge de estado (StatusBadge)">
+          <Row label="tonos · info · success · destructive · muted">
+            <StatusBadge tone="info">Pendiente</StatusBadge>
+            <StatusBadge tone="success">Aceptada</StatusBadge>
+            <StatusBadge tone="destructive">Rechazada</StatusBadge>
+            <StatusBadge tone="muted">Revocada</StatusBadge>
+          </Row>
+          <p className="text-caption text-muted-foreground">
+            Para estados de acciones (validaciones, invitaciones, financiamiento, miembros) — nunca
+            clases sueltas <code className="rounded bg-muted px-1 text-caption">bg-… text-…</code> en las páginas.
+          </p>
+        </Section>
+
+        <Section title="Chip (etiqueta no interactiva)">
+          <Row label="tonos · brand · muted · outline">
+            <Chip tone="brand">★ Python</Chip>
+            <Chip tone="muted">SQL</Chip>
+            <Chip tone="outline">Prácticas</Chip>
+          </Row>
+          <Row label="uso">
+            <p className="text-caption text-muted-foreground">
+              Skills, top-skills y etiquetas de solo lectura. Los interactivos son <code className="rounded bg-muted px-1 text-caption">FilterChip</code>.
+            </p>
+          </Row>
+        </Section>
+
+        <Section title="IconTile (icono en cuadro)">
+          <Row label="tamaño por defecto">
+            <IconTile><Building2 /></IconTile>
+            <IconTile className="rounded-xl"><ShieldCheck /></IconTile>
+          </Row>
+          <p className="text-caption text-muted-foreground">
+            Cuadro estándar para iconos de fila (empresas, secciones). Reemplaza los{" "}
+            <code className="rounded bg-muted px-1 text-caption">grid size-10 place-items-center</code> a mano.
+          </p>
+        </Section>
+
+        <Section title="Formularios validados (Field + useForm)">
+          <Row label="Field con error (aria-invalid + mensaje)">
+            <div className="w-full max-w-sm space-y-4">
+              <Field label="Correo" htmlFor="ds-email" required error="Escribe un correo válido">
+                <Input id="ds-email" type="email" value="correo@mal" onChange={() => {}} aria-invalid />
+              </Field>
+              <Field label="Nombre" htmlFor="ds-name" hint="Opcional">
+                <Input id="ds-name" placeholder="Tu nombre" />
+              </Field>
+            </div>
+          </Row>
+          <p className="text-caption text-muted-foreground">
+            Todos los formularios usan <code className="rounded bg-muted px-1 text-caption">useForm</code> +{" "}
+            <code className="rounded bg-muted px-1 text-caption">validators</code> (required, email, minLen, url). Nunca
+            validar a mano dentro de una página.
+          </p>
+        </Section>
+
+        <Section title="PhotoUpload">
+          <Row label="con iniciales · con foto">
+            <div className="flex items-center gap-6">
+              <PhotoUpload onChange={() => {}} initials="VM" label="Tu foto (opcional)" />
+              <PhotoUpload value="/placeholder.svg" onChange={() => {}} label="Cambiar foto" />
+            </div>
+          </Row>
+          <p className="text-caption text-muted-foreground">
+            Un único círculo: iniciales o foto + badge de cámara. Valida tipo de imagen y tamaño (máx 5 MB).
+          </p>
+        </Section>
+
+        <Section title="Inputs">
+          <Row label="default · con icono · deshabilitado">
+            <Input placeholder="Nombre" className="w-56 max-w-full" />
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder="Buscar…" className="w-56 max-w-full rounded-full pl-9" />
+            </div>
+            <Input placeholder="Deshabilitado" disabled className="w-56 max-w-full" />
+          </Row>
+        </Section>
+
+        <Section title="Tipografía">
+          <div className="space-y-2">
+            {typeSamples.map((sample) => (
+              <div key={sample.name} className="flex items-baseline gap-4">
+                <span className="w-20 shrink-0 text-caption text-muted-foreground">{sample.name}</span>
+                <span className={`${sample.className} font-medium`}>La comunidad LEAD te espera</span>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Avatares">
+          <Row label="tamaños">
+            <InitialsAvatar initials="VM" color="brand-purple" className="size-8" />
+            <InitialsAvatar initials="VM" color="brand-purple" className="size-10" />
+            <InitialsAvatar initials="VM" color="brand-purple" className="size-12" />
+            <InitialsAvatar initials="VM" color="brand-purple" className="size-16 rounded-2xl" />
+          </Row>
+          <Row label="colores">
+            <InitialsAvatar initials="AB" color="brand-purple" />
+            <InitialsAvatar initials="CD" color="brand-rose" />
+            <InitialsAvatar initials="EF" color="brand-red" />
+            <InitialsAvatar initials="GH" color="brand-orange" />
+          </Row>
+        </Section>
+
+        <Section title="Cards">
+          <Row label="card estándar">
+            <Card className="w-72 max-w-full shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-h3 font-semibold">Título de la card</CardTitle>
+              </CardHeader>
+              <CardContent className="text-small text-muted-foreground">
+                Contenido de ejemplo para auditar el ritmo, el padding y la superficie de las cards.
+              </CardContent>
+            </Card>
+          </Row>
+        </Section>
+
+        <Section title="Enlaces">
+          <Row label="texto · con icono">
+            <a href="#" className="flex items-center gap-1 text-small font-medium text-brand-purple-light hover:underline">
+              Enlace de marca <Link2 className="size-3.5" />
+            </a>
+            <a href="#" className="text-small text-muted-foreground hover:text-foreground">
+              Enlace secundario
+            </a>
+          </Row>
+        </Section>
+
+        <Section title="Formularios">
+          <Row label="Label + Input + Textarea">
+            <div className="w-full max-w-sm space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="audit-name">Nombre</Label>
+                <Input id="audit-name" placeholder="Tu nombre" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="audit-bio">Sobre ti</Label>
+                <Textarea id="audit-bio" placeholder="Cuéntanos de ti…" rows={3} />
+              </div>
+            </div>
+          </Row>
+          <Row label="Checkbox">
+            <label className="flex items-center gap-2 text-small">
+              <Checkbox /> Acepto los términos
+            </label>
+          </Row>
+          <Row label="RadioGroup">
+            <RadioGroup defaultValue="a" className="flex gap-4">
+              <label className="flex items-center gap-2 text-small"><RadioGroupItem value="a" /> Nativo</label>
+              <label className="flex items-center gap-2 text-small"><RadioGroupItem value="b" /> Profesional</label>
+            </RadioGroup>
+          </Row>
+          <Row label="Switch">
+            <label className="flex items-center gap-2 text-small"><Switch /> Visible para empresas</label>
+          </Row>
+          <Row label="Select">
+            <Select defaultValue="peru">
+              <SelectTrigger className="w-48 max-w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="peru">LEAD Perú</SelectItem>
+                <SelectItem value="mexico">LEAD México</SelectItem>
+                <SelectItem value="america">LEAD América</SelectItem>
+              </SelectContent>
+            </Select>
+          </Row>
+          <Row label="Toggle">
+            <Toggle aria-label="Notificaciones"><Bell /></Toggle>
+          </Row>
+          <Row label="Combobox">
+            <Command className="w-72 max-w-full rounded-xl border border-border bg-card">
+              <CommandInput placeholder="Buscar persona…" />
+              <CommandList>
+                <CommandEmpty>Sin resultados</CommandEmpty>
+                <CommandGroup heading="Personas">
+                  <CommandItem>Andrea Vargas</CommandItem>
+                  <CommandItem>Lucía Campos</CommandItem>
+                  <CommandItem>Gabriela Torres</CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </Row>
+        </Section>
+
+        <Section title="Tabs">
+          <Row label="line (subrayado)">
+            <Tabs defaultValue="a" className="w-full">
+              <TabsList variant="line" className="w-full border-b border-border">
+                <TabsTrigger value="a" className="px-3 py-2 after:bg-brand-purple-light">Perfil</TabsTrigger>
+                <TabsTrigger value="b" className="px-3 py-2 after:bg-brand-purple-light">Eventos</TabsTrigger>
+              </TabsList>
+              <TabsContent value="a" className="pt-3 text-small text-muted-foreground">Contenido del tab Perfil.</TabsContent>
+              <TabsContent value="b" className="pt-3 text-small text-muted-foreground">Contenido del tab Eventos.</TabsContent>
+            </Tabs>
+          </Row>
+        </Section>
+
+        <Section title="Popups">
+          <Row label="Dialog">
+            <Dialog>
+              <DialogTrigger asChild><Button variant="outline">Abrir diálogo</Button></DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Confirmar registro</DialogTitle>
+                  <DialogDescription>Estás a punto de registrarte al evento. ¿Continuamos?</DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-end gap-2">
+                  <Button variant="secondary">Cancelar</Button>
+                  <Button>Confirmar</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </Row>
+          <Row label="DropdownMenu">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Menú"><Settings /></Button></DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem><User className="mr-2 size-4" /> Perfil</DropdownMenuItem>
+                <DropdownMenuItem><Settings className="mr-2 size-4" /> Ajustes</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </Row>
+          <Row label="Tooltip">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild><Button variant="outline" size="icon" aria-label="Ayuda"><Bell /></Button></TooltipTrigger>
+                <TooltipContent>Notificaciones</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </Row>
+        </Section>
+
+        <Section title="Banners / Alert">
+          <Row label="variantes">
+            <div className="w-full max-w-md space-y-3">
+              <Alert>
+                <AlertTitle>Información</AlertTitle>
+                <AlertDescription>Los eventos de tu capítulo se actualizan cada semana.</AlertDescription>
+              </Alert>
+              <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>No pudimos guardar tu perfil. Intenta de nuevo.</AlertDescription>
+              </Alert>
+              <div className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-small text-muted-foreground">
+                Banner sutil de ejemplo (aviso o nota).
+              </div>
+            </div>
+          </Row>
+        </Section>
+
+        <Section title="Sidebar (navegación)">
+          <Row label="ejemplo vertical">
+            <div className="w-48 max-w-full space-y-1 rounded-xl border border-border bg-card p-3">
+              <SidebarOption active onClick={() => {}}>Perfil</SidebarOption>
+              <SidebarOption active={false} onClick={() => {}}>Eventos</SidebarOption>
+              <SidebarOption active={false} onClick={() => {}}>Guardados</SidebarOption>
+              <Separator className="my-2" />
+              <SidebarOption active={false} onClick={() => {}}>Ayuda</SidebarOption>
+            </div>
+          </Row>
+        </Section>
+
+        <Section title="Loading / Separator">
+          <Row label="Skeleton">
+            <div className="w-full max-w-sm space-y-2">
+              <Skeleton className="h-4 w-40 max-w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+            </div>
+          </Row>
+          <Row label="Separator">
+            <Separator className="w-full" />
+          </Row>
+        </Section>
+      </div>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Header } from "@/components/brand/Header";
 import { themeScript } from "@/components/theme/themeScript";
 import { routing } from "@/i18n/routing";
 import { montserrat, sourceSans } from "@/styles/fonts";
+import { GeistSans } from "geist/font/sans";
 import "@/styles/globals.css";
 
 type Props = {
@@ -36,7 +37,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={`${montserrat.variable} ${sourceSans.variable}`}
+      className={`${montserrat.variable} ${sourceSans.variable} ${GeistSans.variable}`}
       // data-theme is set by themeScript before hydration.
       suppressHydrationWarning
     >
